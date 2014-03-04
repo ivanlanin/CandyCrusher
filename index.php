@@ -2,14 +2,13 @@
 /**
  * Sample usage of CandyCrusher class
  *
- * Open your browser and find your session ID
+ * Read Nick Stallman's article (URL on README.md) on how to find session ID
  */
 require_once 'CandyCrusher.php';
 
 $session = '';
 
-$cc = new CandyCrusher($session, true);
-for ($i = 31; $i <= 40; $i++) {
-    $return = $cc->playGame($i);
-    echo "Level {$i} played<br />";
+$cc = new CandyCrusher($session);
+for ($i = 1; $i <= 5; $i++) {
+    $cc->playGame($i);
 }
