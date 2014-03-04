@@ -7,8 +7,6 @@
 /**
  * CandyCrusher class
  *
- * Loose PHP porting of http://www.stavros.io/posts/winning-candy-crush/
- *
  * @package CandyCrusher
  * @require PHP >= 5.2.0
  */
@@ -37,7 +35,7 @@ class CandyCrusher
      * Raw game data
      * @var array
      */
-    var $gameData;
+    var $meta;
 
     /**
      * Level definitions
@@ -93,8 +91,8 @@ class CandyCrusher
     {
         $param = array('_session' => $this->session);
         $json = $this->callApi('gameInit', $param);
-        $this->gameData = json_decode($json, true);
-        $this->user = $this->gameData['currentUser']['userId'];
+        $this->meta = json_decode($json, true);
+        $this->user = $this->meta['currentUser']['userId'];
         $this->parseLevels();
 
         return $json;
@@ -126,8 +124,10 @@ class CandyCrusher
             'seed' => $seed,
             'cs' => $hash,
         );
-        $param = array('_session' => $this->session,
-            'arg0' => json_encode($arg0));
+        $param = array(
+            '_session' => $this->session,
+            'arg0' => json_encode($arg0),
+        );
         $json = $this->callApi('gameEnd', $param);
 
         return $json;
@@ -140,7 +140,7 @@ class CandyCrusher
     {
         $i = 0;
         $dreamWorldStart = 1200;
-        $episodes = $this->gameData['universeDescription']['episodeDescriptions'];
+        $episodes = $this->meta['universeDescription']['episodeDescriptions'];
         foreach ($episodes as $episode) {
             $episodeId = $episode['episodeId'];
             if (!$this->dreamworld) {
@@ -170,8 +170,11 @@ class CandyCrusher
     {
         $episodeId = $this->levels[$levelNumber]['episodeId'];
         $levelId = $this->levels[$levelNumber]['levelId'];
-        $param = array('_session' => $this->session,
-            'arg0' => $episodeId, 'arg1' => $levelId);
+        $param = array(
+            '_session' => $this->session,
+            'arg0' => $episodeId,
+            'arg1' => $levelId,
+        );
         $json = $this->callApi('getLevelToplist', $param);
         $jsonArray = json_decode($json, true);
         $toplists = $jsonArray['toplist'];
