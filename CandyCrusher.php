@@ -7,6 +7,8 @@
 /**
  * CandyCrusher class
  *
+ * Loose PHP porting of http://www.stavros.io/posts/winning-candy-crush/
+ *
  * @package CandyCrusher
  * @require PHP >= 5.2.0
  */
@@ -51,6 +53,9 @@ class CandyCrusher
      */
     function __construct($session, $dreamworld = false)
     {
+        if ($session == '') {
+            die('Please enter a valid session ID.');
+        }
         $this->session = $session;
         $this->dreamworld = $dreamworld;
         $this->initGame();
@@ -65,7 +70,7 @@ class CandyCrusher
      */
     function callApi($method, $param)
     {
-        $agent = "Mozilla/5.0 (Windows; U; Windows NT 5.0; en; rv:1.9.0.4) Gecko/2009011913 Firefox/3.0.6";
+        $agent = "Mozilla/5.0 Gecko/20100101 Firefox/27.0";
         $baseUrl = 'http://candycrush.king.com/api';
         $query = http_build_query($param);
         $url = "{$baseUrl}/{$method}?{$query}";
@@ -81,6 +86,8 @@ class CandyCrusher
 
     /**
      * Init game
+     *
+     * @return  string  JSON response
      */
     function initGame()
     {
@@ -97,6 +104,7 @@ class CandyCrusher
      * Play game
      *
      * @param   int     $levelNumber Level number
+     * @return  string  JSON response
      */
     function playGame($levelNumber)
     {
@@ -108,7 +116,6 @@ class CandyCrusher
         $hash = md5("{$episodeId}:{$levelId}:{$score}:-1:{$this->user}:" .
             "{$seed}:{$secret}");
         $hash = substr($hash, 0, 6);
-
         $arg0 = array(
             'timeLeftPercent' => -1,
             'variant' => 0,
@@ -121,8 +128,8 @@ class CandyCrusher
         );
         $param = array('_session' => $this->session,
             'arg0' => json_encode($arg0));
-
         $json = $this->callApi('gameEnd', $param);
+
         return $json;
     }
 
@@ -157,6 +164,7 @@ class CandyCrusher
      * Get random score
      *
      * @param   int     $levelNumber Level number
+     * @return  int     Random score
      */
     function getRandomScore($levelNumber)
     {

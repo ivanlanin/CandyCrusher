@@ -1,10 +1,12 @@
 <?php
 /**
- * index.php file
+ * Sample usage of CandyCrusher class
+ *
+ * Open your browser and find your session ID
  */
 require_once 'CandyCrusher.php';
 
-$session = '7B2tdivE-FV4EvLaevDQgg.1';
+$session = '';
 
 $cc = new CandyCrusher($session, true);
 for ($i = 31; $i <= 40; $i++) {
